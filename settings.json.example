@@ -1,0 +1,9 @@
+{
+  "$schema": "https://raw.githubusercontent.com/anthropics/claude-code/main/packages/core/settings.schema.json",
+  "permissions": {
+    "allow": [
+      "Read(refs/**)",
+      "Read(CLAUDE.md)"
+    ]
+  }
+}

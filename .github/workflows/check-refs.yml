@@ -1,0 +1,56 @@
+name: Check Refs Availability
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'  # Chaque lundi a 6h UTC
+  workflow_dispatch:       # Lancement manuel possible
+
+jobs:
+  check-refs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify all ref repos are accessible
+        run: |
+          REPOS=(
+            "https://github.com/esx-framework/esx_core.git"
+            "https://github.com/qbcore-framework/qb-core.git"
+            "https://github.com/Qbox-project/qbx_core.git"
+            "https://github.com/overextended/ox_core.git"
+            "https://github.com/overextended/ox_lib.git"
+            "https://github.com/overextended/ox_inventory.git"
+            "https://github.com/overextended/ox_target.git"
+            "https://github.com/overextended/ox_doorlock.git"
+            "https://github.com/overextended/ox_fuel.git"
+            "https://github.com/overextended/ox_mdt.git"
+            "https://github.com/project-error/npwd.git"
+            "https://github.com/AvarianKnight/pma-voice.git"
+          )
+
+          FAILED=0
+          for repo in "${REPOS[@]}"; do
+            if git ls-remote --exit-code "$repo" HEAD &>/dev/null; then
+              echo "OK: $repo"
+            else
+              echo "FAIL: $repo"
+              FAILED=$((FAILED + 1))
+            fi
+          done
+
+          if [ $FAILED -gt 0 ]; then
+            echo ""
+            echo "::error::$FAILED repo(s) inaccessible(s) — setup.sh va echouer pour ces refs"
+            exit 1
+          fi
+
+          echo ""
+          echo "Tous les repos sont accessibles."
+
+      - name: Test setup.sh execution
+        run: |
+          chmod +x setup.sh
+          ./setup.sh
+          echo ""
+          echo "Refs installees:"
+          ls refs/

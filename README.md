@@ -1,5 +1,8 @@
 # fivem-claude-code-expert
 
+[![Check Refs](https://github.com/ayala2a/fivem-claude-code-expert/actions/workflows/check-refs.yml/badge.svg)](https://github.com/ayala2a/fivem-claude-code-expert/actions/workflows/check-refs.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 Transforme Claude Code en expert FiveM. APIs completes, patterns de securite, performance, et code source reel des frameworks — tout ce qu'il faut pour que Claude genere du code FiveM correct sans halluciner.
 
 ## Ce que ca fait
@@ -189,6 +192,14 @@ Le CLAUDE.md contient les vraies signatures d'API + une regle qui force Claude a
 **Q: Je peux contribuer ?**
 Oui — PR bienvenues pour ajouter des frameworks, corriger des APIs, ou ajouter des patterns.
 
+## Permissions Claude Code (optionnel)
+
+Pour eviter les prompts de permission a chaque lecture des refs :
+
+```bash
+cp settings.json.example /path/to/ton-projet/.claude/settings.json
+```
+
 ## Mise a jour
 
 ```bash
@@ -196,3 +207,7 @@ cd fivem-claude-code-expert
 git pull              # MAJ du CLAUDE.md et scripts
 ./update.sh           # MAJ des refs (code source frameworks)
 ```
+
+## License
+
+MIT — voir [LICENSE](LICENSE).
