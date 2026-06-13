@@ -210,7 +210,7 @@ git pull              # MAJ du CLAUDE.md et scripts
 
 ## Auteur
 
-Cree par **Mario Caballero** ([@ayala2a](https://github.com/ayala2a))
+Cree par **ayala2a** ([@ayala2a](https://github.com/ayala2a))
 
 ## License
 
