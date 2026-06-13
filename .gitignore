@@ -1,0 +1,12 @@
+# Refs clonees localement (recrees via setup.sh)
+refs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo

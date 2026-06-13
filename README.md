@@ -1,247 +1,143 @@
-# FiveM × Claude Code — Ecosystem
+# fivem-claude-code-expert
 
-Meilleurs outils MCP, skills et agents compatibles Claude Code pour le développement FiveM/Lua/ESX.
+Kit complet pour transformer Claude Code en expert FiveM. Fournit les sources de reference des principaux frameworks, une config MCP prete a l'emploi, et un catalogue d'outils communautaires.
 
----
+## A quoi ca sert
 
-## TIER 1 — MCP Servers (live server integration)
+Claude Code n'a pas de connaissances fiables sur les APIs FiveM (ESX, QBCore, QBox, ox_lib, etc.). Ce repo resout le probleme en lui donnant acces au **vrai code source** des frameworks — il lit ces fichiers au lieu d'inventer des APIs.
 
-### mysbryce/5m-mcp ⭐ RECOMMANDÉ
-**Repo:** https://github.com/mysbryce/5m-mcp  
-**Docs:** https://mysbryce.github.io/5m-mcp/  
-**Stars:** 4 | TypeScript | PolyForm Noncommercial
+## Contenu du repo
 
-Le plus complet. Installe une resource `agent_api` sur ton serveur FiveM et expose un MCP pour Claude Code.
-
-**Capacités :**
-- Read/write/edit de fichiers dans un sandbox, scaffolding de resources
-- Invoke de natives client/server en live
-- Screenshot + Chrome DevTools Protocol pour NUI/CEF
-- Bridges natifs ESX, ox_lib, oxmysql avec introspection de schéma
-- Dashboard web + injection de skills custom
-- Sécurité : tokens auto, path sandboxing, audit logs
-
-**Installation :**
-```bash
-# 1. Cloner le repo
-git clone https://github.com/mysbryce/5m-mcp.git
-
-# 2. Copier la resource dans ton serveur
-cp -r 5m-mcp/agent_api /path/to/fivem-server/resources/[agent]/agent_api/
-
-# 3. Dans la console FiveM :
-refresh
-ensure agent_api
-
-# 4. Copier la config MCP affichée dans .mcp.json de Claude Code
+```
+fivem-claude-code-expert/
+├── README.md            # Ce fichier
+├── .gitignore           # Exclut refs/ du versionning
+├── mcp.json.example     # Config MCP template
+├── setup.sh             # Clone toutes les refs en shallow (rapide, leger)
+├── update.sh            # Met a jour toutes les refs en une commande
+└── refs/                # (genere par setup.sh, pas versionne)
+    ├── esx_core/        # Framework ESX
+    ├── qb-core/         # Framework QBCore
+    ├── qbx_core/        # Framework QBox (QBCore next-gen)
+    ├── ox_core/         # Framework Overextended
+    ├── ox_lib/          # ox_lib (zones, callbacks, UI, cache, commands)
+    ├── ox_inventory/    # Systeme d'inventaire
+    ├── ox_target/       # Systeme de ciblage
+    ├── ox_doorlock/     # Systeme de portes
+    ├── ox_fuel/         # Systeme de carburant
+    ├── ox_mdt/          # MDT police/EMS
+    ├── npwd/            # Telephone in-game
+    └── pma-voice/       # Systeme VOIP
 ```
 
----
+## Installation
 
-### eeharumt/fivem-mcp ⭐ 6 stars
-**Repo:** https://github.com/eeharumt/fivem-mcp  
-**Stars:** 6 | TypeScript | MIT
-
-Connexion RCON, 13 tools `fivem_*` :
-- Resource management (ensure/stop/restart/refresh)
-- Exécution de commandes server-side + client-side
-- Trigger d'events, gestion joueurs
-- Agrégation de logs, métriques de perf
-
-**Config `.mcp.json` :**
-```json
-{
-  "mcpServers": {
-    "mcp-fivem": {
-      "command": "node",
-      "args": ["/path/to/fivem-mcp/build/index.js"],
-      "env": {
-        "RCON_ADDRESS": "localhost",
-        "RCON_PORT": "30120",
-        "RCON_PASSWORD": "your_password",
-        "FIVEM_LOGS_DIR": "/path/to/txData/default/logs"
-      }
-    }
-  }
-}
-```
-Ajouter aussi la resource `fivem-plugin/mcp-bridge` + `ensure mcp-bridge` dans `server.cfg`.
-
----
-
-### ktox-dev/ktx_claude_bridge
-**Repo:** https://github.com/ktox-dev/ktx_claude_bridge  
-**Stars:** 0 | TypeScript
-
-Bridge HTTP + MCP, interaction temps réel :
-- Exécute du Lua arbitraire server/client-side dans les environments de resources
-- NUI/CEF via Chrome DevTools Protocol
-- Buffer console 1000 lignes persistent
-- Inspect player data, entity state, commandes enregistrées
-- Read/write dans les répertoires de resources
-- SQL read-only via oxmysql
-- Profiling CPU (Chrome trace format)
-
-> **⚠️ Dev uniquement** — expose du Lua/JS arbitraire, jamais en prod.
-
----
-
-### TMHSDigital/cfx-mcp — Lookup natifs sans serveur
-**Repo:** https://github.com/TMHSDigital/cfx-mcp  
-**Stars:** 0 | TypeScript | CC-BY-NC-ND-4.0
-
-3 tools read-only, aucun serveur requis :
-- `cfx_getNative` — 12 000+ natives par nom/partial/hash
-- `cfx_queryServer` — inspect n'importe quel serveur FiveM live (`/info.json`, `/players.json`)
-- `cfx_searchReleases` — recherche forum cfx.re
-
-**Installation :**
-```bash
-npm install -g @tmhsdigital/cfx-mcp
-```
-```json
-{ "mcpServers": { "cfx-mcp": { "command": "cfx-mcp" } } }
-```
-
----
-
-### TMHSDigital/CFX-Developer-Tools — Full Toolkit
-**Repo:** https://github.com/TMHSDigital/CFX-Developer-Tools  
-**Stars:** 2 | Python | CC BY-NC-ND 4.0
-
-Le plus complet all-in-one (orienté Cursor mais MCP-compatible) :
-- 9 skills : scaffolding, native lookup, manifest, patterns client-server, détection framework, perf, NUI, oxmysql, State Bags
-- 6 rules : conventions Lua/JS/C#, validation fxmanifest, sécurité, anti-patterns perf
-- 12 000+ natives, 101 events, 24 snippets, 11 templates
-- Supporte ESX, QBCore, Qbox, ox_core, VORP, RSG, standalone + RedM
+### 1. Cloner le repo
 
 ```bash
-git clone https://github.com/TMHSDigital/CFX-Developer-Tools.git
-cd mcp-server && pip install -r requirements.txt
+git clone git@github.com:ayala2a/fivem-claude-code-expert.git
+cd fivem-claude-code-expert
 ```
 
----
-
-## TIER 2 — Skills Claude Code (injection de contexte)
-
-### germanfndez/fiveai-skills ⭐⭐ RECOMMANDÉ — 6 stars
-**Repo:** https://github.com/germanfndez/fiveai-skills  
-**Stars:** 6 | Python
-
-Paquets de connaissance pour le FiveM ecosystem (Claude manque de données spécifiques FiveM par défaut) :
-
-| Skill | Contenu |
-|---|---|
-| `lua-basics` | Lua fondamentaux |
-| `fivem-basics` | APIs FiveM spécifiques |
-| `fivem-nui` | NUI/CEF/HTML |
-| `fivem-security` | Sécurité, exploits |
-| `esx-framework` | ESX complet |
-| `qbcore-framework` | QBCore complet |
-| `oxlib` | ox_lib |
-| `oxmysql` | oxmysql |
-| `fivemanage` | FiveManage |
+### 2. Installer les refs
 
 ```bash
+./setup.sh
+```
+
+Ca clone les 12 repos en shallow (sans historique) — rapide et leger (~30MB au lieu de 52MB).
+
+### 3. Configurer Claude Code
+
+Ajouter dans ton `~/.claude/CLAUDE.md` :
+
+```markdown
+Refs locales (sources reelles) :
+~/path/to/fivem-claude-code-expert/refs/
+  esx_core/    qb-core/     qbx_core/    ox_core/
+  ox_lib/      ox_inventory/ ox_target/   ox_doorlock/
+  ox_fuel/     ox_mdt/      npwd/        pma-voice/
+
+Regle : Quand tu ne connais pas une API, lis le code source dans refs/ avant de repondre.
+```
+
+### 4. Configurer les MCP Servers (optionnel)
+
+Si tu as un serveur FiveM local :
+
+```bash
+cp mcp.json.example ~/.claude/.mcp.json
+```
+
+Editer les chemins (`/CHANGE/PATH/TO/...`) et le mot de passe RCON.
+
+### 5. Installer les skills Claude Code (recommande)
+
+```bash
+# Natives FiveM (40+ namespaces, auto-updated)
+bunx skills add heyyczer/fivem-natives-skill
+
+# Knowledge packs ESX/QBCore/ox_lib/oxmysql
 npx skills add germanfndez/fiveai-skills
 ```
 
----
-
-### HeyyCzer/fivem-natives-skill — 1 star
-**Repo:** https://github.com/HeyyCzer/fivem-natives-skill  
-**Stars:** 1 | TypeScript
-
-Auto-updated toutes les 3 jours via GitHub Actions. Référence complète de tous les natives FiveM, 40+ namespaces (PED, VEHICLE, NETWORK, CFX, HUD, GRAPHICS…), types inclus.
+## Usage au quotidien
 
 ```bash
-bunx skills add heyyczer/fivem-natives-skill
+# Mettre a jour toutes les refs d'un coup
+./update.sh
+```
+
+Claude Code lira automatiquement les fichiers dans `refs/` quand il a besoin de verifier une API. Exemple : quand tu lui demandes d'utiliser `ox_inventory`, il ira lire `refs/ox_inventory/` pour trouver les vrais exports, signatures et parametres.
+
+## Comment ca marche
+
+```
+Toi: "Ajoute un systeme de shop avec ox_inventory"
+     │
+     ▼
+Claude Code lit refs/ox_inventory/ pour verifier les exports reels
+     │
+     ▼
+Claude Code lit refs/ox_lib/ pour les UI (context menu, input dialog)
+     │
+     ▼
+Code genere = APIs correctes, pas d'hallucination
 ```
 
 ---
 
-### melihbozkurt10/fivem-dev-plugin — 6 stars
-**Repo:** https://github.com/melihbozkurt10/fivem-dev-plugin  
-**Stars:** 6 | MIT
+## Catalogue d'outils communautaires
 
-Plugin multi-tool avec fetch dynamique de docs. Supporte QBox, QBCore, ESX + NUI (JS/TS), PlebMasters Forge.
+### MCP Servers (integration serveur live)
 
-```bash
-git clone https://github.com/melihbozkurt10/fivem-dev-plugin.git ~/.claude/skills/fivem-dev
-# ou
-npm install -g claude-fivem-dev
-```
+| Outil | Description | Install |
+|-------|-------------|---------|
+| [mysbryce/5m-mcp](https://github.com/mysbryce/5m-mcp) | Sandbox fichiers, invoke natives, screenshots NUI, bridges ESX/ox_lib/oxmysql | resource `agent_api` |
+| [eeharumt/fivem-mcp](https://github.com/eeharumt/fivem-mcp) | RCON : resource management, commandes, events, logs | node + RCON |
+| [ktox-dev/ktx_claude_bridge](https://github.com/ktox-dev/ktx_claude_bridge) | Lua arbitraire, DevTools NUI, profiling CPU (**dev only**) | node |
+| [TMHSDigital/cfx-mcp](https://github.com/TMHSDigital/cfx-mcp) | Lookup 12k+ natives sans serveur | `npm i -g @tmhsdigital/cfx-mcp` |
 
----
+### Skills Claude Code
 
-### matiaspalmac/fivem-audit-skill — Security
-**Repo:** https://github.com/matiaspalmac/fivem-audit-skill  
-**Stars:** 0 | JavaScript
+| Skill | Description | Install |
+|-------|-------------|---------|
+| [fiveai-skills](https://github.com/germanfndez/fiveai-skills) | Knowledge ESX, QBCore, ox_lib, oxmysql, securite | `npx skills add germanfndez/fiveai-skills` |
+| [fivem-natives-skill](https://github.com/HeyyCzer/fivem-natives-skill) | 12k+ natives, 40+ namespaces, MAJ auto /3j | `bunx skills add heyyczer/fivem-natives-skill` |
+| [fivem-dev-plugin](https://github.com/melihbozkurt10/fivem-dev-plugin) | Orchestrateur QBox/QBCore/ESX + NUI | `npm i -g claude-fivem-dev` |
+| [fivem-audit-skill](https://github.com/matiaspalmac/fivem-audit-skill) | Audit secu/perf/malware, score 0-100 | `/fivem-audit` dans Claude Code |
 
-Audit sécurité de resources FiveM. Phases :
-1. SQL injection / event exploitation / duplication / NUI XSS
-2. Détection malware/backdoor (Cipher, Blum, FiveHub, token grabbers, obfuscation)
-3. Analyse performance
-4. Compatibilité framework (ESX, QBCore, QBox, ox_lib, ND_Core)
+### MCP officiels utiles
 
-Score 0–100 avec tags CRITICAL/HIGH/MEDIUM/LOW.
+| Serveur | Usage |
+|---------|-------|
+| `@modelcontextprotocol/server-filesystem` | Acces securise aux dossiers de resources |
+| `@modelcontextprotocol/server-git` | Historique, diff, search |
+| `@modelcontextprotocol/server-github` | Issues, PRs (GITHUB_TOKEN requis) |
 
-```bash
-npx fivem-audit
-# Dans Claude Code :
-/fivem-audit
-```
+## Config MCP complete
 
----
-
-### ostend972/fivem-lua-plugin
-**Repo:** https://github.com/ostend972/fivem-lua-plugin  
-**Stars:** 0 | Shell
-
-Plugin ESX/QBCore/QBOX avec process de dev structuré et quality enforcement.
-
----
-
-## TIER 3 — MCP officiels essentiels (dev général)
-
-| Serveur | Install | Usage FiveM |
-|---|---|---|
-| **Filesystem** | `npx @modelcontextprotocol/server-filesystem /fivem/resources` | Accès sécurisé aux répertoires de resources |
-| **Git** | `npx @modelcontextprotocol/server-git` | Diff, search, historique version control resources |
-| **GitHub** | `npx @modelcontextprotocol/server-github` | Issues, PRs, search GitHub (GITHUB_TOKEN requis) |
-| **SQLite** | `npx @modelcontextprotocol/server-sqlite` | Query BDD locale, test schémas oxmysql |
-| **Fetch** | `npx @modelcontextprotocol/server-fetch` | Fetch docs cfx.re, GitHub raw files |
-
-Tous les serveurs officiels : https://github.com/modelcontextprotocol/servers
-
----
-
-## Stack recommandé
-
-### Dev actif contre un serveur local
-1. `mysbryce/5m-mcp` — intégration live la plus complète
-2. `germanfndez/fiveai-skills` — injection de connaissance ESX/QBCore
-3. `HeyyCzer/fivem-natives-skill` — natives toujours à jour
-4. Filesystem MCP — accès direct aux répertoires resources
-5. Git MCP — awareness du version control
-
-### Review / audit sécurité
-- `matiaspalmac/fivem-audit-skill` — commande `/fivem-audit`
-
-### Lookup natifs sans serveur
-- `TMHSDigital/cfx-mcp` — npm installable, no server needed
-
----
-
-## Config .mcp.json exemple complet
-
-> Un fichier `mcp.json.example` est disponible à la racine de ce repo — copie-le et adapte les chemins.
-
-```bash
-cp mcp.json.example /path/to/your/project/.mcp.json
-```
-
-Config alignée avec le stack recommandé "Dev actif" :
+> Le fichier `mcp.json.example` est a la racine — copier et adapter les chemins.
 
 ```json
 {
@@ -257,14 +153,6 @@ Config alignée avec le stack recommandé "Dev actif" :
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-git", "--repository", "/path/to/fivem-server"]
     },
-    "5m-mcp": {
-      "command": "node",
-      "args": ["/path/to/5m-mcp/build/index.js"],
-      "env": {
-        "AGENT_API_URL": "http://localhost:30120/agent_api",
-        "AGENT_API_TOKEN": "your_token"
-      }
-    },
     "mcp-fivem-rcon": {
       "command": "node",
       "args": ["/path/to/fivem-mcp/build/index.js"],
@@ -279,20 +167,18 @@ Config alignée avec le stack recommandé "Dev actif" :
 }
 ```
 
-> `fiveai-skills` et `fivem-natives-skill` sont des skills Claude Code, pas des MCP — ils s'installent via `npx skills add` et n'apparaissent pas dans `.mcp.json`.
+## Stack recommande
 
----
+| Contexte | Setup |
+|----------|-------|
+| **Dev actif (serveur local)** | Ce repo + `5m-mcp` + skills |
+| **Dev sans serveur** | Ce repo + `cfx-mcp` + skills |
+| **Audit securite** | `/fivem-audit` dans Claude Code |
+| **Minimum viable** | Ce repo seul (refs + CLAUDE.md) |
 
 ## Notes
 
-- L'écosystème est **jeune** (late 2025 / early 2026) — aucun outil dominant, max 6 stars.
-- `mysbryce/5m-mcp` et `eeharumt/fivem-mcp` = MCPs les plus sérieux techniquement.
-- `germanfndez/fiveai-skills` + `melihbozkurt10/fivem-dev-plugin` = skills les plus étoilés.
-- Pour une stack stable aujourd'hui : `cfx-mcp` + Filesystem/Git MCPs + `fiveai-skills`.
-
-### Outils archivés / dépréciés
-
-| Outil | Statut |
-|-------|--------|
-| [adrianmejias/fivem-mcp](https://github.com/adrianmejias/fivem-mcp) | Archivé juin 2026 — stack PHP/Laravel, ne pas utiliser |
-# fivem-claude-code-expert
+- L'ecosysteme MCP FiveM est jeune (2025-2026) — aucun outil dominant
+- Les refs sont la piece maitresse : c'est ce qui empeche Claude d'halluciner
+- `./update.sh` avant chaque session de dev garantit des refs fraiches
+- `refs/` n'est pas versionne — chaque utilisateur clone via `./setup.sh`

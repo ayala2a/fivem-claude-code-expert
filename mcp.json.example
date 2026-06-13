@@ -1,0 +1,25 @@
+{
+  "mcpServers": {
+    "cfx-mcp": {
+      "command": "cfx-mcp"
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/CHANGE/PATH/TO/resources"]
+    },
+    "git": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-git", "--repository", "/CHANGE/PATH/TO/fivem-server"]
+    },
+    "mcp-fivem-rcon": {
+      "command": "node",
+      "args": ["/CHANGE/PATH/TO/fivem-mcp/build/index.js"],
+      "env": {
+        "RCON_ADDRESS": "localhost",
+        "RCON_PORT": "30120",
+        "RCON_PASSWORD": "CHANGE_ME",
+        "FIVEM_LOGS_DIR": "/CHANGE/PATH/TO/txData/default/logs"
+      }
+    }
+  }
+}
