@@ -61,8 +61,8 @@ fx_version 'cerulean'
 game 'gta5'
 lua54 'yes'
 
-author 'Nom'
-description 'Description'
+author 'Ton Nom'
+description 'Description de ta resource'
 version '1.0.0'
 
 dependencies {

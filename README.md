@@ -208,6 +208,10 @@ git pull              # MAJ du CLAUDE.md et scripts
 ./update.sh           # MAJ des refs (code source frameworks)
 ```
 
+## Auteur
+
+Cree par **Mario Caballero** ([@ayala2a](https://github.com/ayala2a))
+
 ## License
 
 MIT — voir [LICENSE](LICENSE).
